@@ -4,7 +4,7 @@ import colors from 'ansi-colors'
 import { Component, Injector, HostListener } from '@angular/core'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { Platform, ProfilesService } from 'tabby-core'
-import { BaseTerminalTabComponent, ConnectableTerminalTabComponent } from 'tabby-terminal'
+import { BaseTerminalTabComponent, ConnectableTerminalTabComponent, TerminalWriteMetadata } from 'tabby-terminal'
 import { SSHService } from '../services/ssh.service'
 import { KeyboardInteractivePrompt, SSHSession } from '../session/ssh'
 import { SSHPortForwardingModalComponent } from './sshPortForwardingModal.component'
@@ -228,5 +228,23 @@ export class SSHTabComponent extends ConnectableTerminalTabComponent<SSHProfile>
         return super.isSessionExplicitlyTerminated() ||
         this.recentInputs.charCodeAt(this.recentInputs.length - 1) === 4 ||
         this.recentInputs.endsWith('exit\r')
+    }
+
+    protected getWriteMetadataForSessionOutput (): TerminalWriteMetadata | undefined {
+        if (!this.config.store.ssh.lineTimestamps.enabled) {
+            return undefined
+        }
+        return {
+            lineTimestamp: {
+                timestamp: Date.now(),
+            },
+        }
+    }
+
+    protected updateLineTimestampOptions (): void {
+        this.frontend?.setLineTimestampOptions({
+            enabled: this.config.store.ssh.lineTimestamps.enabled,
+            hideInAlternateScreen: this.config.store.ssh.lineTimestamps.hideInAlternateScreen,
+        })
     }
 }

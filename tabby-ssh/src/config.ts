@@ -11,6 +11,10 @@ export class SSHConfigProvider extends ConfigProvider {
             x11Display: null,
             knownHosts: [],
             verifyHostKeys: true,
+            lineTimestamps: {
+                enabled: false,
+                hideInAlternateScreen: true,
+            },
         },
         hotkeys: {
             'restart-ssh-session': [],

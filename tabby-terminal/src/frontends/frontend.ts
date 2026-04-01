@@ -14,6 +14,17 @@ export interface SearchState {
     resultCount: number
 }
 
+export interface TerminalWriteMetadata {
+    lineTimestamp?: {
+        timestamp: number
+    }
+}
+
+export interface TerminalLineTimestampOptions {
+    enabled: boolean
+    hideInAlternateScreen: boolean
+}
+
 /**
  * Extend to add support for a different VT frontend implementation
  */
@@ -72,7 +83,7 @@ export abstract class Frontend {
     abstract selectAll (): void
     abstract clearSelection (): void
     abstract focus (): void
-    abstract write (data: string): Promise<void>
+    abstract write (data: string, metadata?: TerminalWriteMetadata): Promise<void>
     abstract clear (): void
     abstract visualBell (): void
 
@@ -83,6 +94,7 @@ export abstract class Frontend {
 
     abstract configure (profile: BaseTerminalProfile): void
     abstract setZoom (zoom: number): void
+    setLineTimestampOptions (_options: TerminalLineTimestampOptions): void { } // eslint-disable-line
 
     abstract findNext (term: string, searchOptions?: SearchOptions): SearchState
     abstract findPrevious (term: string, searchOptions?: SearchOptions): SearchState

@@ -16,6 +16,22 @@ h3 SSH
         (ngModelChange)='config.save()',
     )
 
+.form-line
+    .header
+        .title(translate) Show line timestamps in SSH terminal
+    toggle(
+        [(ngModel)]='config.store.ssh.lineTimestamps.enabled',
+        (ngModelChange)='config.save()',
+    )
+
+.form-line(*ngIf='config.store.ssh.lineTimestamps.enabled')
+    .header
+        .title(translate) Hide timestamps in full-screen terminal apps
+    toggle(
+        [(ngModel)]='config.store.ssh.lineTimestamps.hideInAlternateScreen',
+        (ngModelChange)='config.save()',
+    )
+
 .form-line(*ngIf='hostApp.platform === Platform.Windows')
     .header
         .title(translate) WinSCP path

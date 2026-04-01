@@ -7,7 +7,7 @@ import { AppService, ConfigService, BaseTabComponent, HostAppService, HotkeysSer
 
 import { BaseSession } from '../session'
 
-import { Frontend } from '../frontends/frontend'
+import { Frontend, TerminalWriteMetadata } from '../frontends/frontend'
 import { XTermFrontend, XTermWebGLFrontend } from '../frontends/xtermFrontend'
 import { ResizeEvent, BaseTerminalProfile } from './interfaces'
 import { TerminalDecorator } from './decorator'
@@ -504,13 +504,13 @@ export class BaseTerminalTabComponent<P extends BaseTerminalProfile> extends Bas
     /**
      * Feeds input into the terminal frontend
      */
-    async write (data: string): Promise<void> {
+    async write (data: string, metadata?: TerminalWriteMetadata): Promise<void> {
         this.frontendWriteLock = this.frontendWriteLock.then(() =>
-            this.withSpinnerPaused(() => this.writeRaw(data)))
+            this.withSpinnerPaused(() => this.writeRaw(data, metadata)))
         await this.frontendWriteLock
     }
 
-    protected async writeRaw (data: string): Promise<void> {
+    protected async writeRaw (data: string, metadata?: TerminalWriteMetadata): Promise<void> {
         if (!this.frontend) {
             throw new Error('Frontend not ready')
         }
@@ -527,7 +527,18 @@ export class BaseTerminalTabComponent<P extends BaseTerminalProfile> extends Bas
             }
         }
 
-        await this.frontend.write(data)
+        await this.frontend.write(data, metadata)
+    }
+
+    protected getWriteMetadataForSessionOutput (): TerminalWriteMetadata | undefined {
+        return undefined
+    }
+
+    protected updateLineTimestampOptions (): void {
+        this.frontend?.setLineTimestampOptions({
+            enabled: false,
+            hideInAlternateScreen: true,
+        })
     }
 
     async paste (): Promise<void> {
@@ -583,6 +594,7 @@ export class BaseTerminalTabComponent<P extends BaseTerminalProfile> extends Bas
      */
     configure (): void {
         this.frontend?.configure(this.profile)
+        this.updateLineTimestampOptions()
 
         this.backgroundColor = getTerminalBackgroundColor(this.config, this.themes, this.profile.terminalColorScheme)
     }
@@ -809,7 +821,7 @@ export class BaseTerminalTabComponent<P extends BaseTerminalProfile> extends Bas
         this.attachSessionHandler(this.session.output$, data => {
             if (this.enablePassthrough) {
                 this.output.next(data)
-                this.write(data)
+                this.write(data, this.getWriteMetadataForSessionOutput())
             }
         })
 
