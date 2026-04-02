@@ -11,6 +11,10 @@ import { ConfigService, getCSSFontFamily, PlatformService, ThemesService } from 
     styleUrls: ['./appearanceSettingsTab.component.scss'],
 })
 export class AppearanceSettingsTabComponent {
+    private static readonly BUILTIN_FONTS = [
+        'Source Code Pro',
+    ]
+
     fonts: string[] = []
 
     constructor (
@@ -20,7 +24,10 @@ export class AppearanceSettingsTabComponent {
     ) { }
 
     async ngOnInit () {
-        this.fonts = await this.platform.listFonts()
+        this.fonts = Array.from(new Set([
+            ...AppearanceSettingsTabComponent.BUILTIN_FONTS,
+            ...await this.platform.listFonts(),
+        ])).sort((a, b) => a.localeCompare(b))
     }
 
     fontAutocomplete = (text$: Observable<string>) => {

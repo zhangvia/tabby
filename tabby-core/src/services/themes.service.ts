@@ -75,11 +75,12 @@ export class ThemesService {
         const accentIndex = 4
         const vars: Record<string, string> = {}
         const contrastPairs: string[][] = []
+        const uiForeground = isDark ? '#d6dde0' : '#4d4d4c'
 
         vars['--body-bg'] = background.string()
         if (this.findCurrentTheme().followsColorScheme) {
             vars['--bs-body-bg'] = theme.background
-            vars['--bs-body-color'] = theme.foreground
+            vars['--bs-body-color'] = uiForeground
             vars['--bs-black'] = theme.colors[0]
             vars['--bs-red'] = theme.colors[1]
             vars['--bs-green'] = theme.colors[2]
@@ -103,6 +104,12 @@ export class ThemesService {
             vars['--theme-fg'] = theme.foreground
             vars['--theme-fg-less'] = less(theme.foreground, 0.25).string()
             vars['--theme-fg-less-2'] = less(theme.foreground, 0.5).string()
+            vars['--theme-terminal-fg'] = theme.foreground
+            vars['--theme-ui-fg-more-2'] = more(uiForeground, 0.5).string()
+            vars['--theme-ui-fg-more'] = more(uiForeground, 0.25).string()
+            vars['--theme-ui-fg'] = uiForeground
+            vars['--theme-ui-fg-less'] = less(uiForeground, 0.25).string()
+            vars['--theme-ui-fg-less-2'] = less(uiForeground, 0.5).string()
 
             vars['--theme-bg-less-2'] = less(theme.background, 0.5).string()
             vars['--theme-bg-less'] = less(theme.background, 0.25).string()

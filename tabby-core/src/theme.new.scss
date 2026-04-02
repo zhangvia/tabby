@@ -60,7 +60,7 @@ app-root {
                     }
 
                     &.active {
-                        color: var(--theme-fg);
+                        color: var(--theme-terminal-fg, var(--theme-fg));
                         background: var(--body-bg);
                     }
                 }

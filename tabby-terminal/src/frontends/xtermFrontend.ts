@@ -575,6 +575,7 @@ export class XTermFrontend extends Frontend {
     private resizeObserver?: any
     private flowControl: FlowControl
     private lineTimestampGutter: XTermLineTimestampGutter
+    private readonly fontLoadingListener = () => this.handleFontLoadingDone()
 
     private configService: ConfigService
     private hotkeysService: HotkeysService
@@ -737,6 +738,7 @@ export class XTermFrontend extends Frontend {
         this.xterm.open(host)
         this.opened = true
         this.lineTimestampGutter.attach(host)
+        this.installFontListeners()
 
         // Work around font loading bugs
         await new Promise(resolve => setTimeout(resolve, this.hostApp.platform === Platform.Web ? 1000 : 0))
@@ -814,11 +816,13 @@ export class XTermFrontend extends Frontend {
         window.removeEventListener('resize', this.resizeHandler)
         this.resizeObserver?.disconnect()
         delete this.resizeObserver
+        this.removeFontListeners()
         this.lineTimestampGutter.detach()
     }
 
     destroy (): void {
         super.destroy()
+        this.removeFontListeners()
         this.lineTimestampGutter.dispose()
         this.webGLAddon?.dispose()
         this.canvasAddon?.dispose()
@@ -1054,6 +1058,38 @@ export class XTermFrontend extends Frontend {
         this.xterm.options.lineHeight = Math.max(1, (this.configuredFontSize + this.configuredLinePadding * 2) / this.configuredFontSize)
         this.lineTimestampGutter.invalidateLayout()
         this.resizeHandler()
+        if (this.lineTimestampGutter.isEnabled()) {
+            this.lineTimestampGutter.renderVisibleRows()
+        }
+    }
+
+    private installFontListeners (): void {
+        document.fonts.addEventListener('loadingdone', this.fontLoadingListener)
+        document.fonts.ready.then(() => this.handleFontLoadingDone()).catch(() => null)
+    }
+
+    private removeFontListeners (): void {
+        document.fonts.removeEventListener('loadingdone', this.fontLoadingListener)
+    }
+
+    private handleFontLoadingDone (): void {
+        if (!this.opened || !this.xterm.cols || !this.xterm.rows) {
+            return
+        }
+
+        this.webGLAddon?.clearTextureAtlas()
+        this.canvasAddon?.clearTextureAtlas()
+        this.lineTimestampGutter.invalidateLayout()
+
+        if (this.xtermCore?.charMeasure) {
+            this.xtermCore.charMeasure.measure(this.xtermCore.options)
+        }
+        if (this.xtermCore?.renderer) {
+            this.xtermCore.renderer._updateDimensions()
+        }
+
+        this.resizeHandler()
+        this.xterm.refresh(0, this.xterm.rows - 1)
         if (this.lineTimestampGutter.isEnabled()) {
             this.lineTimestampGutter.renderVisibleRows()
         }

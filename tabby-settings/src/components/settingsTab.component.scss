@@ -3,6 +3,22 @@
     flex: auto;
     flex-direction: column;
     min-width: 0;
+    color: var(--theme-ui-fg, var(--bs-body-color));
+
+    // Keep settings UI text neutral even when the window theme follows the terminal color scheme.
+    --theme-fg: var(--theme-ui-fg, var(--bs-body-color));
+    --theme-fg-less: var(--theme-ui-fg-less, var(--theme-ui-fg, var(--bs-body-color)));
+    --theme-fg-less-2: var(--theme-ui-fg-less-2, var(--theme-ui-fg, var(--bs-body-color)));
+    --theme-fg-more: var(--theme-ui-fg-more, var(--theme-ui-fg, var(--bs-body-color)));
+    --theme-fg-more-2: var(--theme-ui-fg-more-2, var(--theme-ui-fg, var(--bs-body-color)));
+
+    --bs-emphasis-color: var(--theme-ui-fg-less-2, var(--theme-ui-fg, var(--bs-body-color)));
+    --bs-nav-link-color: var(--theme-ui-fg-more, var(--theme-ui-fg, var(--bs-body-color)));
+    --bs-nav-link-hover-color: var(--theme-ui-fg, var(--bs-body-color));
+    --bs-nav-tabs-border-color: var(--theme-ui-fg, var(--bs-body-color));
+    --bs-nav-tabs-link-active-color: var(--theme-ui-fg, var(--bs-body-color));
+    --bs-nav-pills-link-active-color: var(--theme-ui-fg, var(--bs-body-color));
+    --bs-nav-pills-link-active-bg: var(--theme-bg-more-2);
 
     >.btn-block {
         margin: 20px;
