@@ -32,11 +32,6 @@ app-root {
                     transition: 0.125s ease-out width;
                     color: var(--theme-fg-more-2);
 
-                    .index {
-                        color: var(--bs-body-color);
-                        opacity: 0.4;
-                    }
-
                     button {
                         color: var(--bs-body-color);
                         border: none;
@@ -50,16 +45,7 @@ app-root {
                         background: var(--bs-blue);
                     }
 
-                    .activity-indicator {
-                        background:var(--bs-body-color);
-                        opacity: .2;
-                    }
-
-                    .current-tab-indicator {
-                        background:var(--bs-light);
-                    }
-
-                    &.active {
+                    &.active .tab-shell {
                         color: var(--theme-terminal-fg, var(--theme-fg));
                         background: var(--body-bg);
                     }

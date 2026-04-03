@@ -1,29 +1,28 @@
-.colorbar([style.background-color]='tab.color', *ngIf='tab.color != null')
-.progressbar([style.width]='progress + "%"', *ngIf='progress != null')
-.activity-indicator(*ngIf='tab.activity$|async')
-.current-tab-indicator
+.tab-shell
+    .progressbar([style.width]='progress + "%"', *ngIf='progress != null')
+    .leading-buttons
+        button(
+            *ngIf='!config.store.terminal.hideCloseButton',
+            (mousedown)='$event.stopPropagation()',
+            (click)='closeTab($event)'
+        ) &times;
 
-.index(*ngIf='!config.store.terminal.hideTabIndex && hostApp.platform === Platform.macOS', cdkDragHandle) {{index + 1}}
-.index(*ngIf='!config.store.terminal.hideTabIndex && hostApp.platform !== Platform.macOS') {{index + 1}}
+    profile-icon(
+        *ngIf='config.store.terminal.showTabProfileIcon && tab.icon',
+        [icon]='tab.icon',
+        [color]='tab.color ?? undefined'
+    )
 
-profile-icon(
-    *ngIf='config.store.terminal.showTabProfileIcon && tab.icon',
-    [icon]='tab.icon',
-    [color]='tab.color ?? undefined'
-)
+    .name(
+        [class.no-hover]='config.store.terminal.hideCloseButton && config.store.terminal.hideTabOptionsButton'
+        cdkDrag,
+        cdkDragRootElement='tab-header',
+        [cdkDragData]='tab',
+        (cdkDragStarted)='onTabDragStart(tab)',
+        (cdkDragEnded)='onTabDragEnd()',
+    ) {{tab.customTitle || tab.title}}
 
-.name(
-    [class.no-hover]='config.store.terminal.hideCloseButton && config.store.terminal.hideTabOptionsButton'
-    cdkDrag,
-    cdkDragRootElement='tab-header',
-    [cdkDragData]='tab',
-    (cdkDragStarted)='onTabDragStart(tab)',
-    (cdkDragEnded)='onTabDragEnd()',
-) {{tab.customTitle || tab.title}}
-
-.buttons
-    button(*ngIf='!config.store.terminal.hideTabOptionsButton',(click)='onContextMenu($event)') !{require('../icons/tab-options.svg')}
-
-    button(*ngIf='!config.store.terminal.hideCloseButton',(click)='app.closeTab(tab, true)') &times;
+    .buttons
+        button(*ngIf='!config.store.terminal.hideTabOptionsButton',(mousedown)='$event.stopPropagation()',(click)='openTabOptions($event)') !{require('../icons/tab-options.svg')}
 
 ng-content

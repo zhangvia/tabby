@@ -78,6 +78,18 @@ export class TabHeaderComponent extends BaseComponent {
         return items.slice(1)
     }
 
+    closeTab (event: MouseEvent): void {
+        event.preventDefault()
+        event.stopPropagation()
+        this.app.closeTab(this.tab, true)
+    }
+
+    openTabOptions (event: MouseEvent): void {
+        event.preventDefault()
+        event.stopPropagation()
+        this.onContextMenu(event)
+    }
+
     onTabDragStart (tab: BaseTabComponent) {
         this.app.emitTabDragStarted(tab)
     }
