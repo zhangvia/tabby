@@ -40,7 +40,7 @@ title-bar(
             )
 
         .btn-group.background
-            .d-flex(
+            .d-flex.toolbar-tab-shell(
                 *ngFor='let button of leftToolbarButtons'
             )
                 button.btn.btn-secondary.btn-tab-bar(
@@ -49,13 +49,13 @@ title-bar(
                     [fastHtmlBind]='button.icon'
                 )
 
-            .d-flex(
+            .d-flex.toolbar-tab-shell(
+                *ngIf='activeTransfers.length > 0',
                 ngbDropdown,
                 container='body',
                 #activeTransfersDropdown='ngbDropdown'
             )
                 button.btn.btn-secondary.btn-tab-bar(
-                    [hidden]='activeTransfers.length == 0',
                     [ngbTooltip]='"File transfers"|translate',
                     ngbDropdownToggle
                 ) !{require('../icons/transfers.svg')}
@@ -72,7 +72,7 @@ title-bar(
         )
 
         .btn-group.background
-            .d-flex(
+            .d-flex.toolbar-tab-shell(
                 *ngFor='let button of rightToolbarButtons'
             )
                 button.btn.btn-secondary.btn-tab-bar(
@@ -81,11 +81,11 @@ title-bar(
                     [fastHtmlBind]='button.icon'
                 )
 
-            button.btn.btn-secondary.btn-tab-bar.btn-update(
-                *ngIf='updatesAvailable',
-                [ngbTooltip]='"Update available - Click to install"|translate',
-                (click)='updater.update()'
-            ) !{require('../icons/gift.svg')}
+            .toolbar-tab-shell(*ngIf='updatesAvailable')
+                button.btn.btn-secondary.btn-tab-bar.btn-update(
+                    [ngbTooltip]='"Update available - Click to install"|translate',
+                    (click)='updater.update()'
+                ) !{require('../icons/gift.svg')}
 
         window-controls.background(
             *ngIf='config.store.appearance.frame == "thin" \

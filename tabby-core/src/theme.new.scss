@@ -12,17 +12,26 @@ app-root {
         .tab-bar {
             background: var(--theme-bg-more-2);
 
+            .toolbar-tab-shell {
+                background: transparent;
+                transition: 0.125s ease-out background;
+
+                &:hover {
+                    background: var(--body-bg);
+                }
+            }
+
             .btn-tab-bar {
                 background: transparent;
-                line-height: 42px;
+                line-height: 1;
                 align-items: center;
                 svg, path {
                     fill: var(--bs-body-color);
                     fill-opacity: 0.75;
                 }
 
-                &:hover { background: rgba(0, 0, 0, .125) !important; }
-                &:active { background: rgba(0, 0, 0, .25) !important; }
+                &:hover { background: transparent !important; }
+                &:active { background: rgba(0, 0, 0, .08) !important; }
             }
 
             &>.tabs {
